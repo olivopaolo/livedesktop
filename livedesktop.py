@@ -17,45 +17,27 @@ target folder in order to have the webcam view on your desktop.
 
 """
 
-import datetime
 import imghdr
 import logging
 import os.path
-import sys
-
-from PyQt4 import QtCore, QtNetwork
+import time
+import urllib.request
 
 dirname = os.path.join(os.path.expanduser("~"), "Downloads", "livedesktop")
 filebasename = "livedesktop"
 
-# url = QtCore.QUrl("http://www.vieuxlille.com/webcam/pontneuf.jpg")
-# url = QtCore.QUrl("http://95.240.230.122:8251/record/current.jpg")
-url = QtCore.QUrl("http://www.rumegiesmeteo.fr/WEBCAM/Photo001.jpg")
+# url = "http://www.vieuxlille.com/webcam/pontneuf.jpg"
+# url = "http://95.240.230.122:8251/record/current.jpg"
+url = "http://www.rumegiesmeteo.fr/WEBCAM/Photo001.jpg"
 
-def sendRequest():
-    """Send network request."""
-    netmanager.get(QtNetwork.QNetworkRequest(url));
-
-def handleReply(reply):
-    """Write entire reply to the target file."""
-    image = reply.readAll()
+while True:
+    response = urllib.request.urlopen(url)
+    image = response.read()
+    response.close()
     ext = imghdr.what(None, h=image)
     filepath = os.path.join(dirname, "%s.%s"%(filebasename, ext))
     fd = open(filepath, "wb", 0)
     fd.write(image)
-    reply.close()
     fd.close()
-    logging.info("Image refreshed.")
-
-def timeout():
-    sendRequest()
-
-app = QtCore.QCoreApplication(sys.argv)
-netmanager = QtNetwork.QNetworkAccessManager(finished=handleReply)
-# Send first request
-sendRequest()
-# Active timer
-timer = QtCore.QTimer(timeout=timeout)
-timer.start(60000)
-
-sys.exit(app.exec_())
+    logging.debug("Image refreshed.")
+    time.sleep(60)

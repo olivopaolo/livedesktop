@@ -32,12 +32,15 @@ url = "http://www.rumegiesmeteo.fr/WEBCAM/Photo001.jpg"
 
 while True:
     response = urllib.request.urlopen(url)
-    image = response.read()
-    response.close()
-    ext = imghdr.what(None, h=image)
-    filepath = os.path.join(dirname, "%s.%s"%(filebasename, ext))
-    fd = open(filepath, "wb", 0)
-    fd.write(image)
-    fd.close()
-    logging.debug("Image refreshed.")
+    try:
+        image = response.read()
+        response.close()
+        ext = imghdr.what(None, h=image)
+        filepath = os.path.join(dirname, "%s.%s"%(filebasename, ext))
+        fd = open(filepath, "wb", 0)
+        fd.write(image)
+        fd.close()
+        logging.debug("Image refreshed.")
+    except Exception as err:
+        logging.warning(err)
     time.sleep(60)

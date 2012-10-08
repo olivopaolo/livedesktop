@@ -9,38 +9,72 @@
 # this file, and for a DISCLAIMER OF ALL WARRANTIES.
 
 """livedesktop periodically sends network requests to obtain the
-view of a public webcam; the obtained image is written to a target
+view of a public webcam; then the image is written to a target
 file, which is periodically refreshed.
 
 Configure your desktop wallpaper to slide show, and select the
 target folder in order to have the webcam view on your desktop.
 
+URL examples:
+- http://www.vieuxlille.com/webcam/pontneuf.jpg
+- http://95.240.230.122:8251/record/current.jpg
+- http://www.rumegiesmeteo.fr/WEBCAM/Photo001.jpg
+
 """
 
+PROG = "livedesktop.py"
+DEFAULT_FILENAME = "livedesktop"
+
+import argparse
 import imghdr
 import logging
 import os.path
 import time
 import urllib.request
 
-dirname = os.path.join(os.path.expanduser("~"), "Downloads", "livedesktop")
-filebasename = "livedesktop"
+# Init arguments parser
+parser = argparse.ArgumentParser(
+    prog=PROG, description=__doc__,
+    formatter_class=argparse.RawDescriptionHelpFormatter)
 
-# url = "http://www.vieuxlille.com/webcam/pontneuf.jpg"
-# url = "http://95.240.230.122:8251/record/current.jpg"
-url = "http://www.rumegiesmeteo.fr/WEBCAM/Photo001.jpg"
+parser.add_argument("url", metavar="URL", help="image's URL")
+parser.add_argument("target", metavar="TARGET", nargs="?",
+                    default=os.path.dirname(os.path.abspath(__file__)),
+                    help="target directory or file (default: ./)")
+parser.add_argument("-l", dest="logging_level", default="INFO",
+                    metavar="LEVEL", help="set logging level")
+parser.add_argument("-f", dest="freq", default=1.0, type=float,
+                    help="set the refresh frequence (default: 1Hz)")
 
+# Parse arguments
+args = parser.parse_args()
+logging.basicConfig(level=logging.getLevelName(args.logging_level))
+if args.freq==0:
+    print("%s: error: argument -f: invalid value: 0"%PROG)
+    import sys ; sys.exit(-1)
+
+if os.path.isdir(args.target):
+    logging.info("Using default filename: %s", DEFAULT_FILENAME)
+    dirpath = args.target
+    filebasename = DEFAULT_FILENAME
+else:
+    dirpath, filebasename = os.split(args.target)
+
+# Infinite loop
 while True:
-    response = urllib.request.urlopen(url)
     try:
+        response = urllib.request.urlopen(args.url)
         image = response.read()
         response.close()
         ext = imghdr.what(None, h=image)
-        filepath = os.path.join(dirname, "%s.%s"%(filebasename, ext))
-        fd = open(filepath, "wb", 0)
-        fd.write(image)
-        fd.close()
-        logging.debug("Image refreshed.")
+        if ext is not None:
+            filepath = os.path.join(dirpath, "%s.%s"%(filebasename, ext))
+            fd = open(filepath, "wb", 0)
+            fd.write(image)
+            fd.close()
+            logging.debug("Image refreshed.")
+        else:
+            logging.warning("Cannot detect image type.")
     except Exception as err:
         logging.warning(err)
-    time.sleep(60)
+    time.sleep(60/args.freq)

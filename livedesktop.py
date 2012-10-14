@@ -58,7 +58,7 @@ if os.path.isdir(args.target):
     dirpath = args.target
     filebasename = DEFAULT_FILENAME
 else:
-    dirpath, filebasename = os.split(args.target)
+    dirpath, filebasename = os.path.split(args.target)
 
 # Infinite loop
 while True:

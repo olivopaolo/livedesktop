@@ -30,8 +30,13 @@ import imghdr
 import logging
 import os
 import os.path
+import sys
 import time
-import urllib
+
+if sys.version<'3':
+    from urllib import urlopen
+else:
+    from urllib.request import urlopen
 
 # Init arguments parser
 parser = argparse.ArgumentParser(
@@ -64,7 +69,7 @@ else:
 # Infinite loop
 while True:
     try:
-        response = urllib.urlopen(args.url)
+        response = urlopen(args.url)
         image = response.read()
         response.close()
         ext = imghdr.what(None, h=image)

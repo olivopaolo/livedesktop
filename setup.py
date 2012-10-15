@@ -18,7 +18,7 @@ setup(
     name = "livedesktop",
     version = "0.1.0",
     py_modules = ("livedesktop", ),
-    scripts = ("livedesktop", ),
+    scripts = ("livedesktop.py", ),
 
     author = "Paolo Olivo",
     author_email = "olivopaolo@tiscali.it",

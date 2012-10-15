@@ -28,6 +28,7 @@ DEFAULT_FILENAME = "livedesktop"
 import argparse
 import imghdr
 import logging
+import os
 import os.path
 import time
 import urllib
@@ -39,7 +40,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument("url", metavar="URL", help="image's URL")
 parser.add_argument("target", metavar="TARGET", nargs="?",
-                    default=os.path.dirname(os.path.abspath(__file__)),
+                    default=os.getcwd(),
                     help="target directory or file (default: ./)")
 parser.add_argument("-l", dest="logging_level", default="INFO",
                     metavar="LEVEL", help="set logging level")

@@ -35,7 +35,7 @@ setup(
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
         "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python",
         "Topic :: Scientific/Engineering :: Human Machine Interfaces",
         "Topic :: Utilities",
         ),

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # livedesktop.py -
@@ -30,7 +30,7 @@ import imghdr
 import logging
 import os.path
 import time
-import urllib.request
+import urllib
 
 # Init arguments parser
 parser = argparse.ArgumentParser(
@@ -63,7 +63,7 @@ else:
 # Infinite loop
 while True:
     try:
-        response = urllib.request.urlopen(args.url)
+        response = urllib.urlopen(args.url)
         image = response.read()
         response.close()
         ext = imghdr.what(None, h=image)

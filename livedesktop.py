@@ -22,6 +22,8 @@ URL examples:
 
 """
 
+__version__ = "0.1.0"
+
 PROG = "livedesktop.py"
 DEFAULT_FILENAME = "livedesktop"
 

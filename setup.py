@@ -8,7 +8,7 @@
 # See the file LICENSE for information on usage and redistribution of
 # this file, and for a DISCLAIMER OF ALL WARRANTIES.
 
-from distutils.core import setup
+from setuptools import setup
 
 long_description = """**livedesktop** periodically sends network requests to obtain the view of a public webcam; the obtained image is written to a target file, which is periodically refreshed.
 
@@ -18,7 +18,8 @@ setup(
     name = "livedesktop",
     version = "0.1.0",
     py_modules = ("livedesktop", ),
-    scripts = ("livedesktop.py", ),
+    entry_points = {"console_scripts": ["livedesktop = livedesktop"]},
+    install_requires = ("distribute>=0.6", ),
 
     author = "Paolo Olivo",
     author_email = "olivopaolo@tiscali.it",
